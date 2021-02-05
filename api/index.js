@@ -5,6 +5,8 @@ const axios = require("axios");
 const cors = require("cors");
 require("dotenv").config();
 
+const SECRET_KEY = process.env.SECRET_KEY;
+
 app.set("trust proxy", 1);
 
 app.use(cors());
@@ -15,7 +17,6 @@ let sess = {
 };
 
 app.use(session(sess));
-
 
 app.use(bodyParser.json());
 
@@ -150,7 +151,7 @@ app.post("/sign-up", (req, res) => {
 
   axios
     .post(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.SECRET_KEY}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${SECRET_KEY}`,
       { ...user, returnSecureToken: true }
     )
     .then(response => {
@@ -163,10 +164,9 @@ app.post("/sign-up", (req, res) => {
 
 app.post("/sign-in", (req, res) => {
   let user = req.body.user;
-
   axios
     .post(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.SECRET_KEY}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${SECRET_KEY}`,
       { ...user, returnSecureToken: true }
     )
     .then(response => {
