@@ -37,7 +37,7 @@ export default {
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: { baseURL: `https://ennor.herokuapp.com:${process.env.PORT}/api` },
+  axios: { baseURL: `https://ennor.herokuapp.com/api` },
 
   //server middleware
   serverMiddleware: ["@/api/index.js"],
