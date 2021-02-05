@@ -164,7 +164,7 @@ app.post("/sign-up", (req, res) => {
 
 app.post("/sign-in", (req, res) => {
   let user = req.body.user;
-  axios
+/*   axios
     .post(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${SECRET_KEY}`,
       { ...user, returnSecureToken: true }
@@ -187,7 +187,18 @@ app.post("/sign-in", (req, res) => {
     })
     .catch(err => {
       res.status(400).json({ message: err.message });
+    }); */
+
+    console.log("serever in login post");
+    res.status(200).json({
+      userInfo: {
+        auth: true,
+        token: "a54f6a54fdf6ds45f",
+        email: "ananan@asdasd.com",
+        localId: "localıdddd"
+      }
     });
+
 });
 
 app.get("/get-token", (req, res) => {
