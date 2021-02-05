@@ -169,11 +169,7 @@ app.post("/sign-in", (req, res) => {
   axios
     .post(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${SECRET_KEY}`,
-      {
-        email: "xpokales@gmail.com",
-        password: "admin1234",
-        returnSecureToken: true
-      }
+      qs.stringify({ ...user, returnSecureToken: true })
     )
     .then(response => {
       req.session.token = {
