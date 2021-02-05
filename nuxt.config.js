@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -33,11 +34,13 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    "@nuxtjs/axios"
+    "@nuxtjs/axios",
+    "@nuxtjs/dotenv"
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {baseURL: `https://ennor.herokuapp.com/api` },
+
 
   //server middleware
   serverMiddleware: ["@/api/index.js"],

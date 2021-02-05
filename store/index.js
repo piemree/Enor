@@ -1,3 +1,5 @@
+import session from "express-session";
+import cookies from "js-cookie";
 export const state = () => ({
   products: [],
   itemsInBasket: [],
@@ -49,7 +51,7 @@ export const mutations = {
   }
 };
 export const actions = {
-  async nuxtServerInit({ commit }, context) {
+  async nuxtServerInit({ commit, dispatch }, context) {
     let product = await context.$axios.get("/get-products");
     commit("setProducts", product.data.products);
 
@@ -58,6 +60,7 @@ export const actions = {
     commit("setTotalPrice", cart.data.cart.totalPrice);
 
     let info = await context.$axios.get("/get-token");
+
     if (info.data.token) {
       if (info.data.token.email == "xpokales@gmail.com") {
         commit("setIsAdmin", true);
@@ -106,18 +109,22 @@ export const actions = {
       });
   },
   createUser(vuexContext, user) {
-    return this.$axios.post("/sign-up", { user: user }).then(response => {
-      if (response.data.err) {
-        vuexContext.commit("setAlreadyUse", true);
-      } else {
+    return this.$axios
+      .post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.SECRET_KEY}`,
+        { ...user, returnSecureToken: true }
+      )
+      .then(response => {
         vuexContext.commit("setAlreadyUse", false);
-      }
-    });
+      })
+      .catch(err => {
+        vuexContext.commit("setAlreadyUse", true);
+      });
   },
   login(vuexContext, user) {
     return this.$axios
       .post(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA6zDRwOc7_YBw9LnxPYcry-DxxIS3VSIs",
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.SECRET_KEY}`,
         { ...user, returnSecureToken: true }
       )
       .then(response => {
@@ -130,6 +137,14 @@ export const actions = {
         vuexContext.commit("setToken", response.data.idToken);
         vuexContext.commit("setEmail", response.data.email);
         vuexContext.commit("setLocalId", response.data.localId);
+
+        let token = {
+          token: response.data.idToken,
+          email: response.data.email,
+          id: response.data.localId
+        };
+
+        this.$axios.post("/set-cook", token).then(result => {});
       })
       .catch(err => {
         return err;
@@ -143,14 +158,34 @@ export const actions = {
       vuexContext.commit("setOrderedItems", null);
     });
   },
-  addOrdersDb(vuexContext, orders) {
-    this.$axios
-      .post("/add-orders-db", { orders: orders, id: vuexContext.state.localId })
+  async addOrdersDb(vuexContext, orders) {
+    let id = vuexContext.state.localId;
+
+    orders.forEach(async element => {
+      let newStock = parseInt(element.stock) - element.count;
+      await this.$axios.put(
+        `https://e-trade-3fc92-default-rtdb.firebaseio.com/products/${element.id}.json`,
+        {
+          ...element,
+          stock: newStock
+        }
+      );
+    });
+
+    await this.$axios
+      .post(
+        `https://e-trade-3fc92-default-rtdb.firebaseio.com/orders/${id}.json`,
+        orders
+      )
       .then(response => {});
   },
   getOrders(vuexContext) {
+    let id = vuexContext.state.localId;
+
     return this.$axios
-      .post("/get-orders", { id: vuexContext.state.localId })
+      .get(
+        `https://e-trade-3fc92-default-rtdb.firebaseio.com/orders/${id}.json`
+      )
       .then(result => {
         vuexContext.commit("setOrderedItems", result.data);
       });
