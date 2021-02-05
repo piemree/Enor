@@ -162,33 +162,13 @@ app.post("/sign-up", (req, res) => {
     });
 });
 
-app.post("/sign-in", (req, res) => {
+/* app.post("/sign-in", (req, res) => {
   let user = req.body.user;
 
- /*  axios.post(
-    "https://api-helper.azurewebsites.net/token",
-    {
-      username: "api",
-      password: "MY_PASSWORD",
-      grant_type: "MY_GRANT_TYPE"
-    },
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
-      }
-    }
-  );
- */
-  console.log(user);
   axios
     .post(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${SECRET_KEY}`,
       { ...user, returnSecureToken: true },
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
-        }
-      } 
     )
     .then(response => {
       req.session.token = {
@@ -209,7 +189,7 @@ app.post("/sign-in", (req, res) => {
     .catch(err => {
       res.status(400).json({ message: err.message });
     });
-});
+}); */
 
 app.get("/get-token", (req, res) => {
   let token = req.session.token;

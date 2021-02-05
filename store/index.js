@@ -106,7 +106,7 @@ export const actions = {
       });
   },
   createUser(vuexContext, user) {
-   return this.$axios.post("/sign-up", { user: user }).then(response => {
+    return this.$axios.post("/sign-up", { user: user }).then(response => {
       if (response.data.err) {
         vuexContext.commit("setAlreadyUse", true);
       } else {
@@ -116,17 +116,20 @@ export const actions = {
   },
   login(vuexContext, user) {
     return this.$axios
-      .post("/sign-in", { user: user })
+      .post(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA6zDRwOc7_YBw9LnxPYcry-DxxIS3VSIs",
+        { ...user, returnSecureToken: true }
+      )
       .then(response => {
-        if (response.data.userInfo.email == "xpokales@gmail.com") {
+        if (response.data.email == "xpokales@gmail.com") {
           vuexContext.commit("setIsAdmin", true);
         } else {
           vuexContext.commit("setIsAdmin", false);
         }
-        vuexContext.commit("setIsAuth", response.data.userInfo.auth);
-        vuexContext.commit("setToken", response.data.userInfo.token);
-        vuexContext.commit("setEmail", response.data.userInfo.email);
-        vuexContext.commit("setLocalId", response.data.userInfo.localId);
+        vuexContext.commit("setIsAuth", response.data.registered);
+        vuexContext.commit("setToken", response.data.idToken);
+        vuexContext.commit("setEmail", response.data.email);
+        vuexContext.commit("setLocalId", response.data.localId);
       })
       .catch(err => {
         return err;
@@ -175,7 +178,7 @@ export const getters = {
   getOrders(state) {
     return state.orderedItems;
   },
-  getAlreadyUse(state){
-    return state.alreadyUse
+  getAlreadyUse(state) {
+    return state.alreadyUse;
   }
 };
