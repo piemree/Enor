@@ -111,7 +111,7 @@ export const actions = {
   createUser(vuexContext, user) {
     return this.$axios
       .post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.SECRET_KEY}`,
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA6zDRwOc7_YBw9LnxPYcry-DxxIS3VSIs`,
         { ...user, returnSecureToken: true }
       )
       .then(response => {
@@ -124,7 +124,7 @@ export const actions = {
   login(vuexContext, user) {
     return this.$axios
       .post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.SECRET_KEY}`,
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA6zDRwOc7_YBw9LnxPYcry-DxxIS3VSIs`,
         { ...user, returnSecureToken: true }
       )
       .then(response => {
